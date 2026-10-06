@@ -12,6 +12,19 @@ export class ApiError extends Error {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
 
+export function buildQuery(params: object): string {
+  const query = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(params as Record<string, unknown>)) {
+    if (value !== undefined && value !== "") {
+      query.set(key, String(value));
+    }
+  }
+
+  const qs = query.toString();
+  return qs ? `?${qs}` : "";
+}
+
 export async function apiClient<T>(path: string, options?: RequestInit): Promise<T> {
   let res: Response;
 

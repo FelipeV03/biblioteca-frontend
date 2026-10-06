@@ -16,6 +16,12 @@ import { BookTable } from "@/components/books/book-table";
 import { useBooks, useDeleteBook } from "@/hooks/useBooks";
 import { ApiError } from "@/lib/api/client";
 
+const availabilityLabels: Record<string, string> = {
+  all: "Todos",
+  true: "Disponibles",
+  false: "Prestados",
+};
+
 export default function LibrosPage() {
   const [search, setSearch] = useState("");
   const [genre, setGenre] = useState("");
@@ -61,7 +67,9 @@ export default function LibrosPage() {
         />
         <Select value={available} onValueChange={(value) => setAvailable(value ?? "all")}>
           <SelectTrigger className="w-40">
-            <SelectValue placeholder="Disponibilidad" />
+            <SelectValue placeholder="Disponibilidad">
+              {(value: string | null) => availabilityLabels[value ?? "all"] ?? "Disponibilidad"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos</SelectItem>

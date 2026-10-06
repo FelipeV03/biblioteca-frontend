@@ -1,5 +1,5 @@
 import type { Book, Paginated } from "@/types";
-import { apiClient } from "./client";
+import { apiClient, buildQuery } from "./client";
 
 export interface ListBooksParams {
   genre?: string;
@@ -22,19 +22,6 @@ export type UpdateBookInput = Partial<Omit<BookInput, "isbn" | "publishedYear">>
   publishedYear?: number | null;
   isAvailable?: boolean;
 };
-
-function buildQuery(params: object) {
-  const query = new URLSearchParams();
-
-  for (const [key, value] of Object.entries(params as Record<string, unknown>)) {
-    if (value !== undefined && value !== "") {
-      query.set(key, String(value));
-    }
-  }
-
-  const qs = query.toString();
-  return qs ? `?${qs}` : "";
-}
 
 export function listBooks(params: ListBooksParams = {}) {
   return apiClient<Paginated<Book>>(`/books${buildQuery(params)}`);
