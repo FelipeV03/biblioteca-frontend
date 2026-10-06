@@ -8,6 +8,7 @@ const links = [
   { href: "/", label: "Inicio" },
   { href: "/libros", label: "Libros" },
   { href: "/prestamos", label: "Préstamos" },
+  { href: "/estadisticas", label: "Estadísticas" },
 ];
 
 export function Navbar() {
