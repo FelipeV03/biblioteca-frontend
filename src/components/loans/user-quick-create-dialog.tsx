@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { UserPlus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -52,6 +53,7 @@ export function UserQuickCreateDialog({ onCreated }: UserQuickCreateDialogProps)
   return (
     <>
       <Button type="button" variant="outline" size="sm" onClick={() => setOpen(true)}>
+        <UserPlus />
         Nuevo usuario
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { LoanTable } from "@/components/loans/loan-table";
+import { PageHeader } from "@/components/layout/page-header";
+import { TableSkeleton } from "@/components/shared/table-skeleton";
 import { useLoans, useReturnLoan } from "@/hooks/useLoans";
 import { ApiError } from "@/lib/api/client";
 import type { LoanDisplayStatus } from "@/types";
@@ -43,27 +46,35 @@ export default function PrestamosPage() {
   }
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-1 flex-col gap-6 p-6">
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">Préstamos</h1>
-        <Button render={<Link href="/prestamos/nuevo" />}>Nuevo préstamo</Button>
+    <main className="mx-auto flex min-w-0 max-w-5xl flex-1 flex-col gap-6 p-6 sm:p-8">
+      <PageHeader
+        title="Préstamos"
+        description="Registra préstamos y marca devoluciones."
+        action={
+          <Button render={<Link href="/prestamos/nuevo" />}>
+            <Plus />
+            Nuevo préstamo
+          </Button>
+        }
+      />
+
+      <div className="flex flex-col gap-3 rounded-lg border bg-card p-3 sm:flex-row sm:items-center">
+        <Select value={status} onValueChange={(value) => setStatus(value ?? "all")}>
+          <SelectTrigger className="w-full sm:w-48">
+            <SelectValue placeholder="Estado">
+              {(value: string | null) => statusLabels[value ?? "all"] ?? "Estado"}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos</SelectItem>
+            <SelectItem value="active">Activos</SelectItem>
+            <SelectItem value="overdue">Vencidos</SelectItem>
+            <SelectItem value="returned">Devueltos</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      <Select value={status} onValueChange={(value) => setStatus(value ?? "all")}>
-        <SelectTrigger className="w-48">
-          <SelectValue placeholder="Estado">
-            {(value: string | null) => statusLabels[value ?? "all"] ?? "Estado"}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Todos</SelectItem>
-          <SelectItem value="active">Activos</SelectItem>
-          <SelectItem value="overdue">Vencidos</SelectItem>
-          <SelectItem value="returned">Devueltos</SelectItem>
-        </SelectContent>
-      </Select>
-
-      {isLoading && <p className="text-sm text-muted-foreground">Cargando préstamos...</p>}
+      {isLoading && <TableSkeleton columns={6} />}
 
       {isError && (
         <p className="text-sm text-destructive">

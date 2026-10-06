@@ -2,7 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
 import { LoanForm } from "@/components/loans/loan-form";
+import { PageHeader } from "@/components/layout/page-header";
 import { useCreateLoan } from "@/hooks/useLoans";
 import { ApiError } from "@/lib/api/client";
 import type { LoanFormValues } from "@/lib/schemas/loan.schema";
@@ -22,9 +24,13 @@ export default function NuevoPrestamoPage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 p-6">
-      <h1 className="text-2xl font-semibold">Nuevo préstamo</h1>
-      <LoanForm onSubmit={handleSubmit} isSubmitting={createLoan.isPending} />
+    <main className="mx-auto flex w-full min-w-0 max-w-lg flex-1 flex-col gap-6 p-6 sm:p-8">
+      <PageHeader title="Nuevo préstamo" description="Selecciona el libro y el usuario para registrar el préstamo." />
+      <Card>
+        <CardContent>
+          <LoanForm onSubmit={handleSubmit} isSubmitting={createLoan.isPending} />
+        </CardContent>
+      </Card>
     </main>
   );
 }

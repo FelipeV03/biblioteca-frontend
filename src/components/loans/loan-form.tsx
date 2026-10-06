@@ -22,8 +22,8 @@ interface LoanFormProps {
 }
 
 export function LoanForm({ onSubmit, isSubmitting }: LoanFormProps) {
-  const { data: booksData } = useBooks({ available: true, limit: 100 });
-  const { data: usersData, refetch: refetchUsers } = useUsers();
+  const { data: booksData, isLoading: isLoadingBooks } = useBooks({ available: true, limit: 100 });
+  const { data: usersData, isLoading: isLoadingUsers, refetch: refetchUsers } = useUsers();
 
   const {
     control,
@@ -53,8 +53,16 @@ export function LoanForm({ onSubmit, isSubmitting }: LoanFormProps) {
             name="bookId"
             render={({ field }) => (
               <Select value={field.value} onValueChange={(value) => field.onChange(value ?? "")}>
-                <SelectTrigger id="bookId" aria-invalid={!!errors.bookId}>
-                  <SelectValue placeholder={books.length === 0 ? "No hay libros disponibles" : "Selecciona un libro"}>
+                <SelectTrigger id="bookId" className="w-full min-w-0" aria-invalid={!!errors.bookId}>
+                  <SelectValue
+                    placeholder={
+                      isLoadingBooks
+                        ? "Cargando libros..."
+                        : books.length === 0
+                          ? "No hay libros disponibles"
+                          : "Selecciona un libro"
+                    }
+                  >
                     {(value: string | null) => {
                       const book = books.find((b) => String(b.id) === value);
                       return book ? `${book.title} — ${book.author}` : null;
@@ -76,14 +84,22 @@ export function LoanForm({ onSubmit, isSubmitting }: LoanFormProps) {
 
         <Field>
           <FieldLabel htmlFor="userId">Usuario</FieldLabel>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <Controller
               control={control}
               name="userId"
               render={({ field }) => (
                 <Select value={field.value} onValueChange={(value) => field.onChange(value ?? "")}>
-                  <SelectTrigger id="userId" className="flex-1" aria-invalid={!!errors.userId}>
-                    <SelectValue placeholder={users.length === 0 ? "No hay usuarios registrados" : "Selecciona un usuario"}>
+                  <SelectTrigger id="userId" className="w-full min-w-0 sm:flex-1" aria-invalid={!!errors.userId}>
+                    <SelectValue
+                      placeholder={
+                        isLoadingUsers
+                          ? "Cargando usuarios..."
+                          : users.length === 0
+                            ? "No hay usuarios registrados"
+                            : "Selecciona un usuario"
+                      }
+                    >
                       {(value: string | null) => {
                         const user = users.find((u) => String(u.id) === value);
                         return user ? `${user.name} (${user.email})` : null;
@@ -112,7 +128,7 @@ export function LoanForm({ onSubmit, isSubmitting }: LoanFormProps) {
       </FieldGroup>
 
       <div className="flex justify-end gap-2">
-        <Button type="submit" disabled={isSubmitting || books.length === 0}>
+        <Button type="submit" disabled={isSubmitting || isLoadingBooks || books.length === 0}>
           {isSubmitting ? "Registrando..." : "Registrar préstamo"}
         </Button>
       </div>

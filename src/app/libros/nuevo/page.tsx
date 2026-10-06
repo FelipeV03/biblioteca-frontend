@@ -2,7 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
 import { BookForm } from "@/components/books/book-form";
+import { PageHeader } from "@/components/layout/page-header";
 import { useCreateBook } from "@/hooks/useBooks";
 import { ApiError } from "@/lib/api/client";
 import type { BookFormValues } from "@/lib/schemas/book.schema";
@@ -28,9 +30,13 @@ export default function NuevoLibroPage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 p-6">
-      <h1 className="text-2xl font-semibold">Nuevo libro</h1>
-      <BookForm onSubmit={handleSubmit} isSubmitting={createBook.isPending} submitLabel="Crear libro" />
+    <main className="mx-auto flex w-full min-w-0 max-w-lg flex-1 flex-col gap-6 p-6 sm:p-8">
+      <PageHeader title="Nuevo libro" description="Completa los datos para agregarlo al catálogo." />
+      <Card>
+        <CardContent>
+          <BookForm onSubmit={handleSubmit} isSubmitting={createBook.isPending} submitLabel="Crear libro" />
+        </CardContent>
+      </Card>
     </main>
   );
 }

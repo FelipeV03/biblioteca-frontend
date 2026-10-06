@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { Plus, Search } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { BookTable } from "@/components/books/book-table";
+import { PageHeader } from "@/components/layout/page-header";
+import { TableSkeleton } from "@/components/shared/table-skeleton";
 import { useBooks, useDeleteBook } from "@/hooks/useBooks";
 import { ApiError } from "@/lib/api/client";
 
@@ -46,27 +49,36 @@ export default function LibrosPage() {
   }
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-1 flex-col gap-6 p-6">
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">Libros</h1>
-        <Button render={<Link href="/libros/nuevo" />}>Nuevo libro</Button>
-      </div>
+    <main className="mx-auto flex min-w-0 max-w-5xl flex-1 flex-col gap-6 p-6 sm:p-8">
+      <PageHeader
+        title="Libros"
+        description="Catálogo de libros de la biblioteca."
+        action={
+          <Button render={<Link href="/libros/nuevo" />}>
+            <Plus />
+            Nuevo libro
+          </Button>
+        }
+      />
 
-      <div className="flex flex-wrap gap-3">
-        <Input
-          placeholder="Buscar por título o autor..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-xs"
-        />
+      <div className="flex flex-col gap-3 rounded-lg border bg-card p-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="relative w-full sm:min-w-48 sm:flex-1">
+          <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Buscar por título o autor..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-8"
+          />
+        </div>
         <Input
           placeholder="Filtrar por género..."
           value={genre}
           onChange={(e) => setGenre(e.target.value)}
-          className="max-w-xs"
+          className="w-full sm:min-w-40 sm:max-w-xs sm:flex-1"
         />
         <Select value={available} onValueChange={(value) => setAvailable(value ?? "all")}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-full sm:w-40">
             <SelectValue placeholder="Disponibilidad">
               {(value: string | null) => availabilityLabels[value ?? "all"] ?? "Disponibilidad"}
             </SelectValue>
@@ -79,7 +91,7 @@ export default function LibrosPage() {
         </Select>
       </div>
 
-      {isLoading && <p className="text-sm text-muted-foreground">Cargando libros...</p>}
+      {isLoading && <TableSkeleton columns={5} />}
 
       {isError && (
         <p className="text-sm text-destructive">

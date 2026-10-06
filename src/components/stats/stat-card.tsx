@@ -1,26 +1,31 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { LucideIcon } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface StatCardProps {
   label: string;
   value: string | number;
+  icon: LucideIcon;
   tone?: "default" | "destructive" | "muted";
 }
 
 const toneClasses: Record<NonNullable<StatCardProps["tone"]>, string> = {
-  default: "text-foreground",
-  destructive: "text-destructive",
-  muted: "text-muted-foreground",
+  default: "bg-primary/10 text-primary",
+  destructive: "bg-destructive/10 text-destructive",
+  muted: "bg-muted text-muted-foreground",
 };
 
-export function StatCard({ label, value, tone = "default" }: StatCardProps) {
+export function StatCard({ label, value, icon: Icon, tone = "default" }: StatCardProps) {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-sm font-normal text-muted-foreground">{label}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className={cn("text-3xl font-semibold", toneClasses[tone])}>{value}</p>
+      <CardContent className="flex items-center gap-4">
+        <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", toneClasses[tone])}>
+          <Icon className="size-5" />
+        </div>
+        <div className="flex flex-col">
+          <p className="text-2xl font-semibold tracking-tight">{value}</p>
+          <p className="text-sm text-muted-foreground">{label}</p>
+        </div>
       </CardContent>
     </Card>
   );

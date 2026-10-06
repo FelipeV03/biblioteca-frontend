@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Biblioteca — Frontend
 
-## Getting Started
+Frontend del sistema de gestión de biblioteca: CRUD de libros, gestión de préstamos y un dashboard de estadísticas.
 
-First, run the development server:
+## Stack
+
+- [Next.js](https://nextjs.org) (App Router) + TypeScript
+- Tailwind CSS + [shadcn/ui](https://ui.shadcn.com) (componentes accesibles sobre Base UI)
+- [TanStack Query](https://tanstack.com/query) para el manejo de datos remotos (cache, loading/error states, invalidación)
+- react-hook-form + zod para formularios y validación
+- recharts para los gráficos del dashboard
+
+## Requisitos previos
+
+- Node.js 20+
+- El backend (`biblioteca-backend`) corriendo localmente — ver su propio README.
+
+## Instalación
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Copia el archivo de variables de entorno de ejemplo y ajusta si tu backend corre en otro puerto:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cp .env.local.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Por defecto apunta a `http://localhost:4000/api/v1`.
 
-## Learn More
+## Scripts disponibles
 
-To learn more about Next.js, take a look at the following resources:
+| Comando | Descripción |
+|---|---|
+| `npm run dev` | Levanta el servidor de desarrollo en `http://localhost:3000` |
+| `npm run build` | Compila la aplicación para producción |
+| `npm run start` | Sirve el build de producción |
+| `npm run lint` | Corre ESLint |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Estructura del proyecto
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                   # Rutas (App Router): /, /libros, /prestamos, /estadisticas
+├── components/
+│   ├── ui/                # Componentes base de shadcn/ui
+│   ├── books/ loans/ stats/ layout/ providers/
+├── hooks/                 # Hooks de TanStack Query por entidad
+├── lib/
+│   ├── api/                # Cliente HTTP + funciones por entidad (books, loans, users, stats)
+│   └── schemas/            # Validación de formularios (zod)
+└── types/                  # Tipos compartidos (Book, Loan, User, ...)
+```
 
-## Deploy on Vercel
+## Funcionalidades
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Libros** (`/libros`): listado con filtros (búsqueda, género, disponibilidad), crear, editar, eliminar.
+- **Préstamos** (`/prestamos`): listado con filtro por estado (activo/vencido/devuelto), registrar préstamo (con creación rápida de usuario), marcar como devuelto.
+- **Estadísticas** (`/estadisticas`): préstamos activos/vencidos/devueltos, duración promedio de préstamo, libros más prestados, disponibilidad por género.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Todas las mutaciones manejan errores de la API (incluyendo los códigos 409 de reglas de negocio, como "máximo de préstamos activos" o "libro no disponible") mostrando el mensaje correspondiente con notificaciones (toast).
