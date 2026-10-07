@@ -1,10 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createLoan, listLoans, returnLoan, type CreateLoanInput, type ListLoansParams } from "@/lib/api/loans";
 
 export function useLoans(params: ListLoansParams) {
   return useQuery({
     queryKey: ["loans", params],
     queryFn: () => listLoans(params),
+    placeholderData: keepPreviousData,
   });
 }
 

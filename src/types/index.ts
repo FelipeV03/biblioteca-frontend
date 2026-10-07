@@ -14,6 +14,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  documentNumber: string;
   createdAt: string;
   updatedAt: string;
 }
