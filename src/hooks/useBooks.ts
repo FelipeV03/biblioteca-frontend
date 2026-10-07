@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createBook,
   deleteBook,
@@ -14,6 +14,7 @@ export function useBooks(params: ListBooksParams) {
   return useQuery({
     queryKey: ["books", params],
     queryFn: () => listBooks(params),
+    placeholderData: keepPreviousData,
   });
 }
 
