@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BookForm, bookToFormValues } from "@/components/books/book-form";
+import { FormStatusBar } from "@/components/shared/form-status-bar";
 import { useBook, useUpdateBook } from "@/hooks/useBooks";
 import { ApiError } from "@/lib/api/client";
 import type { BookFormValues } from "@/lib/schemas/book.schema";
@@ -25,23 +25,26 @@ export function BookEditView({ id }: { id: number }) {
       });
       toast.success("Libro actualizado correctamente");
       router.push("/libros");
+      return true;
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : "No se pudo actualizar el libro");
+      return false;
     }
   }
 
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="flex flex-col gap-5">
+      <div className="overflow-hidden rounded-xl border bg-card">
+        <FormStatusBar label="Cargando registro..." />
+        <div className="flex flex-col gap-5 p-6 md:p-8">
           {Array.from({ length: 4 }).map((_, index) => (
             <div key={index} className="flex flex-col gap-1.5">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-8 w-full" />
             </div>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
@@ -54,15 +57,15 @@ export function BookEditView({ id }: { id: number }) {
   }
 
   return (
-    <Card>
-      <CardContent>
-        <BookForm
-          defaultValues={bookToFormValues(data.data)}
-          onSubmit={handleSubmit}
-          isSubmitting={updateBook.isPending}
-          submitLabel="Guardar cambios"
-        />
-      </CardContent>
-    </Card>
+    <div className="overflow-hidden rounded-xl border bg-card">
+      <FormStatusBar label={`Editando «${data.data.title}»`} />
+      <BookForm
+        key={data.data.id}
+        defaultValues={bookToFormValues(data.data)}
+        onSubmit={handleSubmit}
+        isSubmitting={updateBook.isPending}
+        submitLabel="Guardar cambios"
+      />
+    </div>
   );
 }
