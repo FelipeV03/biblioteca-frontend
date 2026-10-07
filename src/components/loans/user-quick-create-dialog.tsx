@@ -73,7 +73,18 @@ export function UserQuickCreateDialog({ onCreated }: UserQuickCreateDialogProps)
             <DialogDescription>Registra un nuevo lector en el sistema para poder asignarle préstamos.</DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          <form
+            onSubmit={(event) => {
+              // El Dialog se renderiza en un portal: escapa del DOM del
+              // formulario de prestamo, pero React sigue haciendo bubbling
+              // del evento por el arbol de componentes. Sin esto, enviar
+              // este formulario tambien disparaba la validacion/envio del
+              // formulario de prestamo que lo contiene.
+              event.stopPropagation();
+              handleSubmit(onSubmit)(event);
+            }}
+            className="flex flex-col gap-5"
+          >
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="quick-user-name">
