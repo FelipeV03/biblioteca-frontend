@@ -4,6 +4,7 @@ import { apiClient } from "./client";
 export interface UserInput {
   name: string;
   email: string;
+  documentNumber: string;
 }
 
 export function listUsers() {
